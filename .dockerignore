@@ -3,9 +3,6 @@
 .vagrant.d
 node_modules
 **/*.pyc
-docs
-**/*.rst
-**/*.md
 media
 poradnia/media
 poradnia/staticfiles

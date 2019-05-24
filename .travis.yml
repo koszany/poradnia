@@ -1,34 +1,25 @@
-language: python
-python: "3.6"
-
-cache:
-  directories:
-    - $HOME/.cache/pip
-
 services:
-- mysql
+- docker
 
 env:
-  fast_finish: true
   global:
-    - DATABASE_URL="mysql://root:@localhost/poradnia"
+    - WEB_REPOSITORY_NAME="quay.io/watchdogpolska/poradnia-django"
+    - DOCS_REPOSITORY_NAME="quay.io/watchdogpolska/poradnia-docs"
   matrix:
-    - TOX_ENV=flake8
-    - TOX_ENV=docs
-    - TOX_ENV=py27-dj111-coveralls
-    - TOX_ENV=py36-dj111-coveralls
-
-matrix:
-  allow_failures:
-    - env: TOX_ENV=flake8
+    - PYTHON_VERSION=3.7
+    - PYTHON_VERSION=3.6
+    - PYTHON_VERSION=2.7
 
 before_install:
-  - .contrib/travis-ci/create-database.sh
-install:
-  - pip install -U pip wheel
-  - pip install tox
-script:
-  - tox -e $TOX_ENV
+  - echo "$DOCKER_PASSWORD" | docker login "quay.io" -u "$DOCKER_USERNAME" --password-stdin
+  - . ./.contrib/travis/env.sh
 
-after_script:
-- rm $HOME/.cache/pip/log/*
+install:
+  - ./.contrib/travis/build.sh
+
+script:
+  - ./.contrib/travis/test.sh
+
+deploy:
+  provider: script
+  script: ./.contrib/travis/deploy.sh
