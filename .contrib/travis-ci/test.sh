@@ -1,6 +1,9 @@
 #!/bin/bash
 set -eux
-docker run --rm flake8
+if [ "$FLAKE_ONLY" == "true" ]; then
+	docker run --rm flake8
+	exit 0;
+fi;
 
 NETWORK_NAME="poradnia_network"
 docker network create "$NETWORK_NAME"

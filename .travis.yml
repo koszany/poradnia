@@ -6,9 +6,14 @@ env:
     - WEB_REPOSITORY_NAME="quay.io/watchdogpolska/poradnia-django"
     - DOCS_REPOSITORY_NAME="quay.io/watchdogpolska/poradnia-docs"
   matrix:
-    - PYTHON_VERSION=3.7
-    - PYTHON_VERSION=3.6
-    - PYTHON_VERSION=2.7
+    - PYTHON_VERSION=3.7 FLAKE_ONLY=false
+    - PYTHON_VERSION=3.6 FLAKE_ONLY=false
+    - PYTHON_VERSION=2.7 FLAKE_ONLY=false
+    - FLAKE_ONLY=true
+
+matrix:
+  allow_failures:
+    - env: FLAKE_ONLY=true
 
 before_install:
   - echo "$DOCKER_PASSWORD" | docker login "quay.io" -u "$DOCKER_USERNAME" --password-stdin
