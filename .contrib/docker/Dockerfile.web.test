@@ -1,0 +1,22 @@
+# This is Dockerfile for development purposes only.
+ARG PYTHON_VERSION="3"
+FROM python:${PYTHON_VERSION}-slim
+RUN mkdir /code /code/production
+WORKDIR /code
+
+# Install python dependencies
+ENV PYTHONUNBUFFERED 1
+RUN apt-get update && apt-get install -y\
+    default-libmysqlclient-dev \
+    gcc \
+    python-dev \
+    curl
+COPY requirements/*.txt ./requirements/
+ARG DJANGO_VERSION='<2'
+RUN pip install --no-cache-dir django$DJANGO_VERSION
+RUN pip install --no-cache-dir -r requirements/test.txt
+RUN pip install --no-cache-dir coveralls
+COPY .contrib/docker/docker-entrypoint.web.test.sh /docker-entrypoint.sh
+ENTRYPOINT ["/docker-entrypoint.sh"]
+COPY . /code
+CMD ["manage.py","test","--verbosity=2"]

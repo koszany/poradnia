@@ -1,0 +1,21 @@
+# This is Dockerfile for development purposes only.
+ARG PYTHON_VERSION="3"
+FROM python:${PYTHON_VERSION}-slim as builder
+RUN mkdir /code /code/production
+WORKDIR /code
+
+# Install python dependencies
+ENV PYTHONUNBUFFERED 1
+RUN apt-get update && apt-get install -y\
+    default-libmysqlclient-dev \
+    gcc \
+    python-dev \
+    curl
+COPY requirements/*.txt ./requirements/
+ARG DJANGO_VERSION='<2'
+RUN pip install --no-cache-dir django$DJANGO_VERSION
+RUN pip install --no-cache-dir -r requirements/test.txt
+COPY . /code
+RUN sphinx-build -b html -d docs/_build/doctrees docs docs/_build/html
+FROM nginx:alpine
+COPY --from=builder /code/docs/_build/html /var/www/htmt

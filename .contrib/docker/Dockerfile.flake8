@@ -1,0 +1,5 @@
+FROM python:alpine
+RUN pip install flake8 flake8-import-order
+WORKDIR ./code
+COPY . .
+CMD ["flake8","poradnia"]

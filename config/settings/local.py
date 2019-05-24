@@ -14,6 +14,10 @@ DEBUG = env('DEBUG', default=True)
 TEMPLATES[0]['OPTIONS']['debug'] = DEBUG
 # END DEBUG
 
+DATABASES['default']['TEST'] = {
+    'CHARSET': 'utf8',
+    'COLLATION': 'utf8_general_ci',
+}
 # django-extensions
 
 INSTALLED_APPS += ('django_extensions',)
