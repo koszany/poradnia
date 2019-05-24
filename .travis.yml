@@ -12,14 +12,14 @@ env:
 
 before_install:
   - echo "$DOCKER_PASSWORD" | docker login "quay.io" -u "$DOCKER_USERNAME" --password-stdin
-  - . ./.contrib/travis/env.sh
+  - . ./.contrib/travis-ci/env.sh
 
 install:
-  - ./.contrib/travis/build.sh
+  - ./.contrib/travis-ci/build.sh
 
 script:
-  - ./.contrib/travis/test.sh
+  - ./.contrib/travis-ci/test.sh
 
 deploy:
   provider: script
-  script: ./.contrib/travis/deploy.sh
+  script: ./.contrib/travis-ci/deploy.sh
